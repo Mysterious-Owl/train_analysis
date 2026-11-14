@@ -52,7 +52,7 @@ h2 { font-size:20px; margin:0 0 4px; letter-spacing:-.01em; }
 .w-item { transition:background .12s; }
 .w-item:hover { background:var(--hover); }
 .w-time { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 4px; }
-.w-t { font-size:20px; font-weight:700; font-variant-numeric:tabular-nums; }
+.w-t { font-size:16px; font-weight:700; }
 .w-m10 { flex-basis:100%; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
 .w-body { min-width:0; }
 .w-title { font-weight:600; }
@@ -116,148 +116,154 @@ td.train { min-width:180px; }
 <section>
   <h2>Watch order · Sunday 15 Nov</h2>
   <p class="sub">Charts expected on Sunday, in time order. ★ fits the plan · <span class="est">est.</span> estimated with the 10-hour rule.</p>
-  <ol class="timeline card">
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">05:55</span><span class="est">est.</span><span class="w-m10">−10h 05:55</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">20658</span> NZM UBL SF Exp <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 19:20</b> · <span class="tt fast">4h52m</span> · charted at <span class="cs">NZM</span></div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Stn time −10h</th><th>1st chart</th><th>Train</th><th>Leaves GWL</th><th>Travel</th><th>Charted at</th></tr></thead>
+      <tbody>
+<tr>
+<td data-l="Stn time −10h">05:55</td>
+<td data-l="1st chart"><b class="w-t">05:55</b><span class="est">est.</span></td>
+<td data-l="Train" class="train"><span class="no">20658</span> NZM UBL SF Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 19:20</b></td>
+<td data-l="Travel"><span class="tt fast">4h52m</span></td>
+<td data-l="Charted at"><span class="cs">NZM</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">07:05</td>
+<td data-l="1st chart"><b class="w-t">07:05</b><span class="est">est.</span></td>
+<td data-l="Train" class="train"><span class="no">12752</span> JAT NED Humsafar <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 21:20</b></td>
+<td data-l="Travel"><span class="tt ">5h20m</span></td>
+<td data-l="Charted at"><span class="cs">NDLS</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">05:15</td>
+<td data-l="1st chart"><b class="w-t">07:16</b></td>
+<td data-l="Train" class="train"><span class="no">12780</span> Goa Express <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 20:26</b></td>
+<td data-l="Travel"><span class="tt ">6h09m</span></td>
+<td data-l="Charted at"><span class="cs">NZM</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">07:42</td>
+<td data-l="1st chart"><b class="w-t">08:13</b></td>
+<td data-l="Train" class="train"><span class="no">20172</span> Vande Bharat Exp</td>
+<td data-l="Leaves GWL"><b>Sun 17:42</b></td>
+<td data-l="Travel"><span class="tt fast">4h34m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">09:07</td>
+<td data-l="1st chart"><b class="w-t">09:17</b></td>
+<td data-l="Train" class="train"><span class="no">12191</span> NZM JBP SF Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 19:07</b></td>
+<td data-l="Travel"><span class="tt ">6h48m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">09:30</td>
+<td data-l="1st chart"><b class="w-t">09:46</b></td>
+<td data-l="Train" class="train"><span class="no">12406</span> Gondwana Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 19:30</b></td>
+<td data-l="Travel"><span class="tt ">5h35m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">09:42</td>
+<td data-l="1st chart"><b class="w-t">09:54</b></td>
+<td data-l="Train" class="train"><span class="no">16032</span> Andaman Express <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 19:42</b></td>
+<td data-l="Travel"><span class="tt ">6h28m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">10:10</td>
+<td data-l="1st chart"><b class="w-t">10:18</b></td>
+<td data-l="Train" class="train"><span class="no">22222</span> CSMT Rajdhani <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 20:10</b></td>
+<td data-l="Travel"><span class="tt fast">4h25m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">10:00</td>
+<td data-l="1st chart"><b class="w-t">10:36</b></td>
+<td data-l="Train" class="train"><span class="no">12724</span> Telangana Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 20:00</b></td>
+<td data-l="Travel"><span class="tt ">5h20m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">10:55</td>
+<td data-l="1st chart"><b class="w-t">11:40</b></td>
+<td data-l="Train" class="train"><span class="no">12616</span> Grand Trunk Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 20:55</b></td>
+<td data-l="Travel"><span class="tt ">6h20m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">11:40</td>
+<td data-l="1st chart"><b class="w-t">11:40</b><span class="est">est.</span></td>
+<td data-l="Train" class="train"><span class="no">07622</span> NZM NED Fest SPL <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Mon 01:47</b></td>
+<td data-l="Travel"><span class="tt ">5h23m</span></td>
+<td data-l="Charted at"><span class="cs">NZM</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">10:00</td>
+<td data-l="1st chart"><b class="w-t">12:01</b></td>
+<td data-l="Train" class="train"><span class="no">20806</span> AP Express <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 23:45</b></td>
+<td data-l="Travel"><span class="tt fast">4h50m</span></td>
+<td data-l="Charted at"><span class="cs">NDLS</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">12:15</td>
+<td data-l="1st chart"><b class="w-t">12:15</b><span class="est">est.</span></td>
+<td data-l="Train" class="train"><span class="no">22456</span> KLK SNSI SF Exp (Sainagar Shirdi) <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Mon 02:29</b></td>
+<td data-l="Travel"><span class="tt ">5h11m</span></td>
+<td data-l="Charted at"><span class="cs">NDLS</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">12:48</td>
+<td data-l="1st chart"><b class="w-t">13:00</b></td>
+<td data-l="Train" class="train"><span class="no">12628</span> Karnataka Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Mon 00:48</b></td>
+<td data-l="Travel"><span class="tt ">5h37m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">13:15</td>
+<td data-l="1st chart"><b class="w-t">13:25</b></td>
+<td data-l="Train" class="train"><span class="no">12920</span> Malwa Express</td>
+<td data-l="Leaves GWL"><b>Mon 01:22</b></td>
+<td data-l="Travel"><span class="tt ">7h04m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">13:25</td>
+<td data-l="1st chart"><b class="w-t">13:27</b></td>
+<td data-l="Train" class="train"><span class="no">12622</span> Tamilnadu SF Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Mon 01:15</b></td>
+<td data-l="Travel"><span class="tt ">5h30m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">13:10</td>
+<td data-l="1st chart"><b class="w-t">13:32</b></td>
+<td data-l="Train" class="train"><span class="no">22692</span> SBC (Bangalore) Rajdhani <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Sun 23:10</b></td>
+<td data-l="Travel"><span class="tt fast">4h35m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">14:05</td>
+<td data-l="1st chart"><b class="w-t">14:52</b></td>
+<td data-l="Train" class="train"><span class="no">12626</span> Kerala SF Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Mon 00:05</b></td>
+<td data-l="Travel"><span class="tt ">5h15m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">14:26</td>
+<td data-l="1st chart"><b class="w-t">14:53</b></td>
+<td data-l="Train" class="train"><span class="no">12156</span> Bhopal Express <span class="star" title="Fits plan">★</span></td>
+<td data-l="Leaves GWL"><b>Mon 00:26</b></td>
+<td data-l="Travel"><span class="tt ">5h14m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+</tr><tr>
+<td data-l="Stn time −10h">15:10</td>
+<td data-l="1st chart"><b class="w-t">15:26</b></td>
+<td data-l="Train" class="train"><span class="no">12722</span> Dakshin Exp</td>
+<td data-l="Leaves GWL"><b>Mon 03:22</b></td>
+<td data-l="Travel"><span class="tt ">6h13m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+</tr>
+      </tbody>
+    </table>
   </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">07:05</span><span class="est">est.</span><span class="w-m10">−10h 07:05</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12752</span> JAT NED Humsafar <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 21:20</b> · <span class="tt ">5h20m</span> · charted at <span class="cs">NDLS</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">07:16</span><span class="w-m10">−10h 05:15</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12780</span> Goa Express <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 20:26</b> · <span class="tt ">6h09m</span> · charted at <span class="cs">NZM</span></div>
-  </div>
-</li>
-<li class="w-item">
-  <div class="w-time"><span class="w-t">08:13</span><span class="w-m10">−10h 07:42</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">20172</span> Vande Bharat Exp</div>
-    <div class="w-meta">Leaves GWL <b>Sun 17:42</b> · <span class="tt fast">4h34m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">09:17</span><span class="w-m10">−10h 09:07</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12191</span> NZM JBP SF Exp <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 19:07</b> · <span class="tt ">6h48m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">09:46</span><span class="w-m10">−10h 09:30</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12406</span> Gondwana Exp <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 19:30</b> · <span class="tt ">5h35m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">09:54</span><span class="w-m10">−10h 09:42</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">16032</span> Andaman Express <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 19:42</b> · <span class="tt ">6h28m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">10:18</span><span class="w-m10">−10h 10:10</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">22222</span> CSMT Rajdhani <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 20:10</b> · <span class="tt fast">4h25m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">10:36</span><span class="w-m10">−10h 10:00</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12724</span> Telangana Exp <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 20:00</b> · <span class="tt ">5h20m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">11:40</span><span class="w-m10">−10h 10:55</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12616</span> Grand Trunk Exp <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 20:55</b> · <span class="tt ">6h20m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">11:40</span><span class="est">est.</span><span class="w-m10">−10h 11:40</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">07622</span> NZM NED Fest SPL <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Mon 01:47</b> · <span class="tt ">5h23m</span> · charted at <span class="cs">NZM</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">12:01</span><span class="w-m10">−10h 10:00</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">20806</span> AP Express <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 23:45</b> · <span class="tt fast">4h50m</span> · charted at <span class="cs">NDLS</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">12:15</span><span class="est">est.</span><span class="w-m10">−10h 12:15</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">22456</span> KLK SNSI SF Exp (Sainagar Shirdi) <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Mon 02:29</b> · <span class="tt ">5h11m</span> · charted at <span class="cs">NDLS</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">13:00</span><span class="w-m10">−10h 12:48</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12628</span> Karnataka Exp <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Mon 00:48</b> · <span class="tt ">5h37m</span> · charted at <span class="cs">AGC</span></div>
-  </div>
-</li>
-<li class="w-item">
-  <div class="w-time"><span class="w-t">13:25</span><span class="w-m10">−10h 13:15</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12920</span> Malwa Express</div>
-    <div class="w-meta">Leaves GWL <b>Mon 01:22</b> · <span class="tt ">7h04m</span> · charted at <span class="cs">AGC</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">13:27</span><span class="w-m10">−10h 13:25</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12622</span> Tamilnadu SF Exp <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Mon 01:15</b> · <span class="tt ">5h30m</span> · charted at <span class="cs">AGC</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">13:32</span><span class="w-m10">−10h 13:10</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">22692</span> SBC (Bangalore) Rajdhani <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Sun 23:10</b> · <span class="tt fast">4h35m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">14:52</span><span class="w-m10">−10h 14:05</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12626</span> Kerala SF Exp <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Mon 00:05</b> · <span class="tt ">5h15m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item fits">
-  <div class="w-time"><span class="w-t">14:53</span><span class="w-m10">−10h 14:26</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12156</span> Bhopal Express <span class="star" title="Fits plan">★</span></div>
-    <div class="w-meta">Leaves GWL <b>Mon 00:26</b> · <span class="tt ">5h14m</span> · charted at <span class="cs">GWL</span></div>
-  </div>
-</li>
-<li class="w-item">
-  <div class="w-time"><span class="w-t">15:26</span><span class="w-m10">−10h 15:10</span></div>
-  <div class="w-body">
-    <div class="w-title"><span class="no">12722</span> Dakshin Exp</div>
-    <div class="w-meta">Leaves GWL <b>Mon 03:22</b> · <span class="tt ">6h13m</span> · charted at <span class="cs">AGC</span></div>
-  </div>
-</li>
-  </ol>
 </section>
 
 <section>
