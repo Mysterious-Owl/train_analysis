@@ -4,45 +4,773 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bhopal Morning Train</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root { --bg:#f7f7f5; --fg:#1d1d1f; --muted:#6b6b70; --card:#ffffff; --line:#e3e3e0; --star:#fff6d6; --est:#8a6d00; --accent:#3f51b5; }
+:root {
+  --bg:#f4f5f7; --card:#ffffff; --fg:#15171c; --muted:#6b7280; --line:#e6e8ec;
+  --accent:#3949ab; --accent-soft:#e8eaf6; --hover:#eef0fb;
+  --fast:#0f7b4a; --fast-soft:#e3f5ec; --est:#9a6b00; --est-soft:#fff1cc;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.08);
+}
 @media (prefers-color-scheme: dark) {
-  :root { --bg:#141416; --fg:#ececee; --muted:#9a9aa2; --card:#1d1d21; --line:#2e2e34; --star:#3a3220; --est:#e0c060; --accent:#8c9eff; }
+  :root {
+    --bg:#0f1115; --card:#181b21; --fg:#e8eaed; --muted:#9aa0aa; --line:#262a33;
+    --accent:#8c9eff; --accent-soft:#1f2440; --hover:#22263a;
+    --fast:#4cd38f; --fast-soft:#12301f; --est:#f0c45a; --est-soft:#3a2f12;
+    --shadow:none;
+  }
 }
 * { box-sizing:border-box; }
-body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
-main { max-width:1200px; margin:0 auto; padding:24px 16px 48px; }
-h1 { font-size:28px; margin:0 0 4px; color:var(--accent); }
-.subtitle { color:var(--muted); margin:0 0 20px; }
-h2 { font-size:20px; margin:32px 0 12px; }
-ul { padding-left:20px; }
-code { background:var(--line); padding:1px 5px; border-radius:4px; font-size:13px; }
-.table-wrap { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:10px; }
-table { border-collapse:collapse; width:100%; font-size:14px; font-variant-numeric:tabular-nums; }
-th, td { padding:7px 10px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; }
-th { position:sticky; top:0; background:var(--card); font-weight:600; }
-tr.star td { background:var(--star); }
+html { overflow-x:hidden; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; -webkit-font-smoothing:antialiased; }
+main { max-width:1180px; margin:0 auto; padding:32px 16px 64px; }
+header h1 { margin:0; font-size:30px; letter-spacing:-.02em; }
+header p { margin:6px 0 0; color:var(--muted); }
+.route { display:inline-flex; gap:8px; align-items:center; font-weight:600; color:var(--accent); background:var(--accent-soft); padding:4px 10px; border-radius:999px; font-size:13px; margin-bottom:10px; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr)); gap:12px; margin:24px 0 8px; }
+.stat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; box-shadow:var(--shadow); }
+.stat .k { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+.stat .v { font-size:24px; font-weight:700; margin-top:2px; }
+.stat .s { font-size:13px; color:var(--muted); }
+section { margin-top:36px; }
+h2 { font-size:20px; margin:0 0 4px; letter-spacing:-.01em; }
+.sub { color:var(--muted); margin:0 0 14px; font-size:14px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); }
+.no { font-variant-numeric:tabular-nums; font-weight:600; color:var(--accent); }
+.star { color:#e0a800; }
+.stn, .cs { display:inline-block; font-size:11px; font-weight:600; letter-spacing:.03em; padding:1px 7px; border-radius:6px; background:var(--accent-soft); color:var(--accent); }
+.tt { display:inline-block; font-variant-numeric:tabular-nums; font-weight:500; padding:1px 8px; border-radius:6px; background:var(--line); }
+.tt.fast { background:var(--fast-soft); color:var(--fast); font-weight:700; }
+.est { display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:0 6px; border-radius:5px; background:var(--est-soft); color:var(--est); margin-left:4px; vertical-align:1px; }
+.muted { color:var(--muted); }
+
+/* timeline */
+.timeline { list-style:none; margin:0; padding:6px 0; }
+.w-item { display:grid; grid-template-columns:120px 1fr; gap:16px; padding:12px 18px; border-bottom:1px solid var(--line); }
+.w-item:last-child { border-bottom:0; }
+.w-item { transition:background .12s; }
+.w-item:hover { background:var(--hover); }
+.w-time { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 4px; }
+.w-t { font-size:20px; font-weight:700; font-variant-numeric:tabular-nums; }
+.w-m10 { flex-basis:100%; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
+.w-body { min-width:0; }
+.w-title { font-weight:600; }
+.w-meta { font-size:13px; color:var(--muted); margin-top:2px; }
+.w-meta b { color:var(--fg); font-weight:600; }
+
+/* filters */
+.filters { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
+.chip { border:1px solid var(--line); background:var(--card); color:var(--fg); font:inherit; font-size:13px; padding:6px 12px; border-radius:999px; cursor:pointer; }
+.chip[aria-pressed="true"] { background:var(--accent); border-color:var(--accent); color:#fff; }
+.count { font-size:13px; color:var(--muted); align-self:center; margin-left:auto; }
+
+/* table */
+table { width:100%; border-collapse:collapse; font-size:14px; table-layout:auto; }
+th, td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:middle; }
+th { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+td { font-variant-numeric:tabular-nums; }
+tbody tr:last-child td { border-bottom:0; }
+tbody tr td { transition:background .12s; }
+tbody tr:hover td { background:var(--hover); }
 tr.unknown td { color:var(--muted); }
-tr.est td { font-style:italic; }
-strong { color:var(--accent); }
+tr[hidden] { display:none; }
+td.train { min-width:180px; }
+
+.legend { display:flex; flex-wrap:wrap; gap:8px 18px; font-size:13px; color:var(--muted); margin-top:12px; }
+.notes { padding:6px 20px; }
+.notes li { margin:8px 0; }
+
+@media (max-width: 860px) {
+  table, thead, tbody, tr, td { display:block; width:100%; }
+  thead { display:none; }
+  tbody tr { display:grid; grid-template-columns:1fr 1fr; gap:6px 12px; padding:12px 16px; border-bottom:1px solid var(--line); }
+  tbody tr:last-child { border-bottom:0; }
+  tbody tr:hover { background:var(--hover); }
+  tbody tr:hover td { background:none; }
+  td { padding:0; border:0; }
+  td::before { content:attr(data-l); display:block; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+  td.train { grid-column:1 / -1; order:-1; font-size:15px; font-weight:600; }
+  td.train::before { display:none; }
+  .w-item { grid-template-columns:84px 1fr; gap:12px; padding:12px 14px; }
+  .w-t { font-size:17px; }
+  header h1 { font-size:24px; }
+}
 </style>
 </head>
 <body>
 <main>
-<h1>Bhopal Morning Train</h1>
-<p class="subtitle">Gwalior (GWL) → Bhopal: every train from Sun 15 Nov 00:00 to Mon 16 Nov 12:00</p>
-<p>Plan: leave GWL on Sunday evening and reach Bhopal by <strong>Mon 16 Nov 08:00</strong>.</p>
-<p>Sources:</p>
-<ul><li>Train timings: <code>tr.pdf</code> (Sun 15 Nov) and <code>tr2.pdf</code> (Mon 16 Nov).</li><li>Chart times: IRCTC reservation-chart screenshots of the <strong>14 Nov</strong> trains.</li></ul>
-<p>How to read the chart columns:</p>
-<ul><li><strong>1st chart:</strong> the clock time the 1st chart came out (seen on the 14 Nov train).</li><li><strong>Gap before charting stn:</strong> how long before the train reaches its charting station the 1st chart came out.<ul><li>For trains that start at the charting station (NZM, NDLS), the departure time is used.</li><li>For trains charted at GWL, the GWL departure time is used.</li></ul></li><li>Charting-station times at AGC, NZM and NDLS come from public timetable sites (railmitra, ixigo, travelkhana). Confirm them on NTES.</li><li>The same train usually gets its chart at about the same clock time each day.</li><li><code>?</code> = not yet collected.</li></ul>
-<p>Arrival station is Bhopal Jn (BPL) unless marked RKMP (Rani Kamalapati) or SHRN (Sant Hirdaram Nagar).</p>
-<p>⭐ = fits the plan (leaves Sunday evening or early Monday, arrives by Mon 08:00).</p>
-<div class="table-wrap"><table><thead><tr><th>⭐</th><th>Dep GWL</th><th>Train</th><th>Name</th><th>Arr</th><th>Travel time</th><th>Charting stn</th><th>Charting stn time − 10h</th><th>1st chart</th><th>Gap before charting stn</th></tr></thead><tbody><tr class=""><td></td><td>Sun 00:05</td><td>12626</td><td>Kerala SF Exp</td><td>Sun 05:20</td><td>5h15m</td><td>GWL</td><td>14:05</td><td>14:52</td><td>9h13m</td></tr><tr class=""><td></td><td>Sun 00:26</td><td>12156</td><td>Bhopal Express</td><td>Sun 05:40</td><td>5h14m</td><td>GWL</td><td>14:26</td><td>14:53</td><td>9h33m</td></tr><tr class=""><td></td><td>Sun 00:48</td><td>12628</td><td>Karnataka Exp</td><td>Sun 06:25</td><td>5h37m</td><td>AGC</td><td>12:48</td><td>13:00</td><td>9h48m</td></tr><tr class=""><td></td><td>Sun 01:15</td><td>12622</td><td>Tamilnadu SF Exp</td><td>Sun 06:45</td><td>5h30m</td><td>AGC</td><td>13:25</td><td>13:27</td><td>9h58m</td></tr><tr class=""><td></td><td>Sun 01:22</td><td>12920</td><td>Malwa Express</td><td>Sun 08:26 SHRN</td><td>7h04m</td><td>AGC</td><td>13:15</td><td>13:25</td><td>9h50m</td></tr><tr class="unknown"><td></td><td>Sun 01:51</td><td>11058</td><td>ASR CSMT Exp</td><td>Sun 09:15</td><td>7h24m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 02:29</td><td>15302</td><td>LKU SBC Express</td><td>Sun 07:50 RKMP</td><td>5h21m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 03:00</td><td>12486</td><td>SGNR NED Exp</td><td>Sun 08:25</td><td>5h25m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class=""><td></td><td>Sun 03:22</td><td>12722</td><td>Dakshin Exp</td><td>Sun 09:35</td><td>6h13m</td><td>AGC</td><td>15:10</td><td>15:26</td><td>9h44m</td></tr><tr class="unknown"><td></td><td>Sun 04:30</td><td>06598</td><td>YNRK-YPR Exp SPL</td><td>Sun 10:30</td><td>6h00m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 06:20</td><td>12198</td><td>BPL Intercity</td><td>Sun 14:35</td><td>8h15m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 09:28</td><td>12002</td><td>Bhopal Shatabdi</td><td>Sun 14:12</td><td><strong>4h44m</strong></td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 09:43</td><td>12804</td><td>VSKP Swarna Jayanti</td><td>Sun 15:15</td><td>5h32m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 09:58</td><td>12708</td><td>NZM TPTY SF Exp (AP Sampark Kranti)</td><td>Sun 15:30</td><td>5h32m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 10:21</td><td>12138</td><td>Punjab Mail</td><td>Sun 16:35</td><td>6h14m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 10:33</td><td>12618</td><td>Mangladweep Exp</td><td>Sun 16:20</td><td>5h47m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 10:54</td><td>18238</td><td>Chhattisgarh Exp</td><td>Sun 17:55</td><td>7h01m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 11:45</td><td>12650</td><td>YPR Sampark Kranti (Karnataka)</td><td>Sun 16:55</td><td>5h10m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 16:07</td><td>20424</td><td>Patalkot Exp</td><td>Sun 21:50</td><td>5h43m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 16:24</td><td>11078</td><td>Jhelum Express</td><td>Mon 00:00</td><td>7h36m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Sun 17:08</td><td>12716</td><td>Sachkhand Exp</td><td>Sun 22:35</td><td>5h27m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class=""><td></td><td>Sun 17:42</td><td>20172</td><td>Vande Bharat Exp</td><td>Sun 22:16 RKMP</td><td><strong>4h34m</strong></td><td>GWL</td><td>07:42</td><td>08:13</td><td>9h29m</td></tr><tr class="star"><td>⭐</td><td>Sun 19:07</td><td>12191</td><td>NZM JBP SF Exp</td><td>Mon 01:55</td><td>6h48m</td><td>GWL</td><td>09:07</td><td>09:17</td><td>9h50m</td></tr><tr class="star est"><td>⭐</td><td>Sun 19:20</td><td>20658</td><td>NZM UBL SF Exp</td><td>Mon 00:12 RKMP</td><td><strong>4h52m</strong></td><td>NZM</td><td>05:55</td><td>~05:55 (est.)</td><td>~10h (est.)</td></tr><tr class="star"><td>⭐</td><td>Sun 19:30</td><td>12406</td><td>Gondwana Exp</td><td>Mon 01:05</td><td>5h35m</td><td>GWL</td><td>09:30</td><td>09:46</td><td>9h44m</td></tr><tr class="star"><td>⭐</td><td>Sun 19:42</td><td>16032</td><td>Andaman Express</td><td>Mon 02:10</td><td>6h28m</td><td>GWL</td><td>09:42</td><td>09:54</td><td>9h48m</td></tr><tr class="star"><td>⭐</td><td>Sun 20:00</td><td>12724</td><td>Telangana Exp</td><td>Mon 01:20</td><td>5h20m</td><td>GWL</td><td>10:00</td><td>10:36</td><td>9h24m</td></tr><tr class="star"><td>⭐</td><td>Sun 20:10</td><td>22222</td><td>CSMT Rajdhani</td><td>Mon 00:35</td><td><strong>4h25m</strong></td><td>GWL</td><td>10:10</td><td>10:18</td><td>9h52m</td></tr><tr class="star"><td>⭐</td><td>Sun 20:26</td><td>12780</td><td>Goa Express</td><td>Mon 02:35</td><td>6h09m</td><td>NZM</td><td>05:15</td><td>07:16</td><td>7h59m</td></tr><tr class="star"><td>⭐</td><td>Sun 20:55</td><td>12616</td><td>Grand Trunk Exp</td><td>Mon 03:15</td><td>6h20m</td><td>GWL</td><td>10:55</td><td>11:40</td><td>9h15m</td></tr><tr class="star est"><td>⭐</td><td>Sun 21:20</td><td>12752</td><td>JAT NED Humsafar</td><td>Mon 02:40 RKMP</td><td>5h20m</td><td>NDLS</td><td>07:05</td><td>~07:05 (est.)</td><td>~10h (est.)</td></tr><tr class="star"><td>⭐</td><td>Sun 23:10</td><td>22692</td><td>SBC (Bangalore) Rajdhani</td><td>Mon 03:45</td><td><strong>4h35m</strong></td><td>GWL</td><td>13:10</td><td>13:32</td><td>9h38m</td></tr><tr class="star"><td>⭐</td><td>Sun 23:45</td><td>20806</td><td>AP Express</td><td>Mon 04:35</td><td><strong>4h50m</strong></td><td>NDLS</td><td>10:00</td><td>12:01</td><td>7h59m</td></tr><tr class="star"><td>⭐</td><td>Mon 00:05</td><td>12626</td><td>Kerala SF Exp</td><td>Mon 05:20</td><td>5h15m</td><td>GWL</td><td>14:05</td><td>14:52</td><td>9h13m</td></tr><tr class="star"><td>⭐</td><td>Mon 00:26</td><td>12156</td><td>Bhopal Express</td><td>Mon 05:40</td><td>5h14m</td><td>GWL</td><td>14:26</td><td>14:53</td><td>9h33m</td></tr><tr class="star"><td>⭐</td><td>Mon 00:48</td><td>12628</td><td>Karnataka Exp</td><td>Mon 06:25</td><td>5h37m</td><td>AGC</td><td>12:48</td><td>13:00</td><td>9h48m</td></tr><tr class="star"><td>⭐</td><td>Mon 01:15</td><td>12622</td><td>Tamilnadu SF Exp</td><td>Mon 06:45</td><td>5h30m</td><td>AGC</td><td>13:25</td><td>13:27</td><td>9h58m</td></tr><tr class=""><td></td><td>Mon 01:22</td><td>12920</td><td>Malwa Express</td><td>Mon 08:26 SHRN</td><td>7h04m</td><td>AGC</td><td>13:15</td><td>13:25</td><td>9h50m</td></tr><tr class="star est"><td>⭐</td><td>Mon 01:47</td><td>07622</td><td>NZM NED Fest SPL</td><td>Mon 07:10</td><td>5h23m</td><td>NZM</td><td>11:40</td><td>~11:40 (est.)</td><td>~10h (est.)</td></tr><tr class="unknown"><td></td><td>Mon 01:51</td><td>11058</td><td>ASR CSMT Exp</td><td>Mon 09:15</td><td>7h24m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="star est"><td>⭐</td><td>Mon 02:29</td><td>22456</td><td>KLK SNSI SF Exp (Sainagar Shirdi)</td><td>Mon 07:40</td><td>5h11m</td><td>NDLS</td><td>12:15</td><td>~12:15 (est.)</td><td>~10h (est.)</td></tr><tr class=""><td></td><td>Mon 03:22</td><td>12722</td><td>Dakshin Exp</td><td>Mon 09:35</td><td>6h13m</td><td>AGC</td><td>15:10</td><td>15:26</td><td>9h44m</td></tr><tr class="unknown"><td></td><td>Mon 06:20</td><td>12198</td><td>BPL Intercity</td><td>Mon 14:35</td><td>8h15m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Mon 09:28</td><td>12002</td><td>Bhopal Shatabdi</td><td>Mon 14:12</td><td><strong>4h44m</strong></td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Mon 09:43</td><td>12782</td><td>NZM MYS SF Exp (Swarna Jayanti)</td><td>Mon 15:15</td><td>5h32m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Mon 10:21</td><td>12138</td><td>Punjab Mail</td><td>Mon 16:35</td><td>6h14m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Mon 10:33</td><td>12618</td><td>Mangladweep Exp</td><td>Mon 16:20</td><td>5h47m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Mon 10:54</td><td>18238</td><td>Chhattisgarh Exp</td><td>Mon 17:55</td><td>7h01m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Mon 11:20</td><td>12808</td><td>Samta Express</td><td>Mon 17:35</td><td>6h15m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr><tr class="unknown"><td></td><td>Mon 11:45</td><td>12650</td><td>YPR Sampark Kranti (Karnataka)</td><td>Mon 16:55</td><td>5h10m</td><td>?</td><td>?</td><td>?</td><td>?</td></tr></tbody></table></div>
-<h2>Watch order for Sun 15 Nov (all trains from Sun 09:00 to Mon 12:00)</h2>
-<div class="table-wrap"><table><thead><tr><th>⭐</th><th>Charting stn time − 10h</th><th>Time</th><th>Train</th><th>Dep GWL</th><th>Travel time</th><th>Charting stn</th></tr></thead><tbody><tr class="star"><td>⭐</td><td>05:55</td><td>05:55</td><td>20658 NZM UBL SF Exp</td><td>Sun 19:20</td><td><strong>4h52m</strong></td><td>NZM</td></tr><tr class="star"><td>⭐</td><td>07:05</td><td>07:05</td><td>12752 JAT NED Humsafar</td><td>Sun 21:20</td><td>5h20m</td><td>NDLS</td></tr><tr class="star"><td>⭐</td><td>05:15</td><td>07:16</td><td>12780 Goa Express</td><td>Sun 20:26</td><td>6h09m</td><td>NZM</td></tr><tr class=""><td></td><td>07:42</td><td>08:13</td><td>20172 Vande Bharat Exp</td><td>Sun 17:42</td><td><strong>4h34m</strong></td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>09:07</td><td>09:17</td><td>12191 NZM JBP SF Exp</td><td>Sun 19:07</td><td>6h48m</td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>09:30</td><td>09:46</td><td>12406 Gondwana Exp</td><td>Sun 19:30</td><td>5h35m</td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>09:42</td><td>09:54</td><td>16032 Andaman Express</td><td>Sun 19:42</td><td>6h28m</td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>10:10</td><td>10:18</td><td>22222 CSMT Rajdhani</td><td>Sun 20:10</td><td><strong>4h25m</strong></td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>10:00</td><td>10:36</td><td>12724 Telangana Exp</td><td>Sun 20:00</td><td>5h20m</td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>10:55</td><td>11:40</td><td>12616 Grand Trunk Exp</td><td>Sun 20:55</td><td>6h20m</td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>11:40</td><td>11:40</td><td>07622 NZM NED Fest SPL</td><td>Mon 01:47</td><td>5h23m</td><td>NZM</td></tr><tr class="star"><td>⭐</td><td>10:00</td><td>12:01</td><td>20806 AP Express</td><td>Sun 23:45</td><td><strong>4h50m</strong></td><td>NDLS</td></tr><tr class="star"><td>⭐</td><td>12:15</td><td>12:15</td><td>22456 KLK SNSI SF Exp (Sainagar Shirdi)</td><td>Mon 02:29</td><td>5h11m</td><td>NDLS</td></tr><tr class="star"><td>⭐</td><td>12:48</td><td>13:00</td><td>12628 Karnataka Exp</td><td>Mon 00:48</td><td>5h37m</td><td>AGC</td></tr><tr class=""><td></td><td>13:15</td><td>13:25</td><td>12920 Malwa Express</td><td>Mon 01:22</td><td>7h04m</td><td>AGC</td></tr><tr class="star"><td>⭐</td><td>13:25</td><td>13:27</td><td>12622 Tamilnadu SF Exp</td><td>Mon 01:15</td><td>5h30m</td><td>AGC</td></tr><tr class="star"><td>⭐</td><td>13:10</td><td>13:32</td><td>22692 SBC (Bangalore) Rajdhani</td><td>Sun 23:10</td><td><strong>4h35m</strong></td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>14:05</td><td>14:52</td><td>12626 Kerala SF Exp</td><td>Mon 00:05</td><td>5h15m</td><td>GWL</td></tr><tr class="star"><td>⭐</td><td>14:26</td><td>14:53</td><td>12156 Bhopal Express</td><td>Mon 00:26</td><td>5h14m</td><td>GWL</td></tr><tr class=""><td></td><td>15:10</td><td>15:26</td><td>12722 Dakshin Exp</td><td>Mon 03:22</td><td>6h13m</td><td>AGC</td></tr></tbody></table></div>
-<h2>Notes</h2>
-<ul><li>The "Journey Date" on a chart is the date the train leaves the boarding station (GWL).</li><li>Charts come out about <strong>7½–8 hours</strong> before departure for trains charted at their starting station (20806, 12780). For trains charted partway along the route, it's about <strong>9–10 hours</strong> before they reach the charting station (12626, 12156, 22692, 12616, 12724, 12191, 12406, 16032, 22222, 12628, 12622).</li><li>After charting, none of 12626, 12156, 12628 or 12622 sell GWL→BPL tickets online. The only way is the TTE on board. Check the "TTE can book till / Online booking" note on every other chart: that note decides which trains you can actually book online.</li><li>To fill the <code>?</code> cells, open the chart for journey date <strong>14/11</strong> with boarding station <strong>GWL</strong>. Alternatively, run <code>console_charts.js</code> in the browser console on irctc.co.in/online-charts.</li></ul>
+<header>
+  <div class="route">GWL → BPL · Sun 15 – Mon 16 Nov 2026</div>
+  <h1>Bhopal Morning Train</h1>
+  <p>Leave Gwalior Sunday evening, reach Bhopal by Monday 08:00. When does each train's chart come out, so you can book the moment it does?</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="k">Trains that fit</div><div class="v">17</div><div class="s">of 50 departures listed</div></div>
+  <div class="stat"><div class="k">Fastest that fits</div><div class="v">4h25m</div><div class="s">22222 CSMT Rajdhani, Sun 20:10</div></div>
+  <div class="stat"><div class="k">First chart Sunday</div><div class="v">05:55</div><div class="s">20658 NZM UBL SF Exp</div></div>
+  <div class="stat"><div class="k">Typical lead time</div><div class="v">~9–10h</div><div class="s">before the charting station</div></div>
+</div>
+
+<section>
+  <h2>Watch order · Sunday 15 Nov</h2>
+  <p class="sub">Charts expected on Sunday, in time order. ★ fits the plan · <span class="est">est.</span> estimated with the 10-hour rule.</p>
+  <ol class="timeline card">
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">05:55</span><span class="est">est.</span><span class="w-m10">−10h 05:55</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">20658</span> NZM UBL SF Exp <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 19:20</b> · <span class="tt fast">4h52m</span> · charted at <span class="cs">NZM</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">07:05</span><span class="est">est.</span><span class="w-m10">−10h 07:05</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12752</span> JAT NED Humsafar <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 21:20</b> · <span class="tt ">5h20m</span> · charted at <span class="cs">NDLS</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">07:16</span><span class="w-m10">−10h 05:15</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12780</span> Goa Express <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 20:26</b> · <span class="tt ">6h09m</span> · charted at <span class="cs">NZM</span></div>
+  </div>
+</li>
+<li class="w-item">
+  <div class="w-time"><span class="w-t">08:13</span><span class="w-m10">−10h 07:42</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">20172</span> Vande Bharat Exp</div>
+    <div class="w-meta">Leaves GWL <b>Sun 17:42</b> · <span class="tt fast">4h34m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">09:17</span><span class="w-m10">−10h 09:07</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12191</span> NZM JBP SF Exp <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 19:07</b> · <span class="tt ">6h48m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">09:46</span><span class="w-m10">−10h 09:30</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12406</span> Gondwana Exp <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 19:30</b> · <span class="tt ">5h35m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">09:54</span><span class="w-m10">−10h 09:42</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">16032</span> Andaman Express <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 19:42</b> · <span class="tt ">6h28m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">10:18</span><span class="w-m10">−10h 10:10</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">22222</span> CSMT Rajdhani <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 20:10</b> · <span class="tt fast">4h25m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">10:36</span><span class="w-m10">−10h 10:00</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12724</span> Telangana Exp <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 20:00</b> · <span class="tt ">5h20m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">11:40</span><span class="w-m10">−10h 10:55</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12616</span> Grand Trunk Exp <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 20:55</b> · <span class="tt ">6h20m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">11:40</span><span class="est">est.</span><span class="w-m10">−10h 11:40</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">07622</span> NZM NED Fest SPL <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Mon 01:47</b> · <span class="tt ">5h23m</span> · charted at <span class="cs">NZM</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">12:01</span><span class="w-m10">−10h 10:00</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">20806</span> AP Express <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 23:45</b> · <span class="tt fast">4h50m</span> · charted at <span class="cs">NDLS</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">12:15</span><span class="est">est.</span><span class="w-m10">−10h 12:15</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">22456</span> KLK SNSI SF Exp (Sainagar Shirdi) <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Mon 02:29</b> · <span class="tt ">5h11m</span> · charted at <span class="cs">NDLS</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">13:00</span><span class="w-m10">−10h 12:48</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12628</span> Karnataka Exp <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Mon 00:48</b> · <span class="tt ">5h37m</span> · charted at <span class="cs">AGC</span></div>
+  </div>
+</li>
+<li class="w-item">
+  <div class="w-time"><span class="w-t">13:25</span><span class="w-m10">−10h 13:15</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12920</span> Malwa Express</div>
+    <div class="w-meta">Leaves GWL <b>Mon 01:22</b> · <span class="tt ">7h04m</span> · charted at <span class="cs">AGC</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">13:27</span><span class="w-m10">−10h 13:25</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12622</span> Tamilnadu SF Exp <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Mon 01:15</b> · <span class="tt ">5h30m</span> · charted at <span class="cs">AGC</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">13:32</span><span class="w-m10">−10h 13:10</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">22692</span> SBC (Bangalore) Rajdhani <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Sun 23:10</b> · <span class="tt fast">4h35m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">14:52</span><span class="w-m10">−10h 14:05</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12626</span> Kerala SF Exp <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Mon 00:05</b> · <span class="tt ">5h15m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item fits">
+  <div class="w-time"><span class="w-t">14:53</span><span class="w-m10">−10h 14:26</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12156</span> Bhopal Express <span class="star" title="Fits plan">★</span></div>
+    <div class="w-meta">Leaves GWL <b>Mon 00:26</b> · <span class="tt ">5h14m</span> · charted at <span class="cs">GWL</span></div>
+  </div>
+</li>
+<li class="w-item">
+  <div class="w-time"><span class="w-t">15:26</span><span class="w-m10">−10h 15:10</span></div>
+  <div class="w-body">
+    <div class="w-title"><span class="no">12722</span> Dakshin Exp</div>
+    <div class="w-meta">Leaves GWL <b>Mon 03:22</b> · <span class="tt ">6h13m</span> · charted at <span class="cs">AGC</span></div>
+  </div>
+</li>
+  </ol>
+</section>
+
+<section>
+  <h2>All trains</h2>
+  <p class="sub">Every departure from Gwalior between Sun 00:00 and Mon 12:00. Chart times come from the 14 Nov (or 13 Nov) trains.</p>
+  <div class="filters" role="group" aria-label="Filter trains">
+    <button class="chip" data-f="all" aria-pressed="true">All</button>
+    <button class="chip" data-f="fits" aria-pressed="false">★ Fits plan</button>
+    <button class="chip" data-f="fast" aria-pressed="false">Under 5h</button>
+    <button class="chip" data-f="known" aria-pressed="false">Chart time known</button>
+    <button class="chip" data-f="Sun" aria-pressed="false">Sunday</button>
+    <button class="chip" data-f="Mon" aria-pressed="false">Monday</button>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Leaves GWL</th><th>Train</th><th>Arrives</th><th>Travel</th><th>Charted at</th><th>Stn time −10h</th><th>1st chart</th><th>Gap</th></tr></thead>
+      <tbody id="rows">
+<tr class="" data-fits="0" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 00:05</b></td>
+<td data-l="Train" class="train"><span class="no">12626</span> Kerala SF Exp</td>
+<td data-l="Arrives">Sun 05:20</td>
+<td data-l="Travel"><span class="tt ">5h15m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">14:05</td>
+<td data-l="1st chart">14:52</td>
+<td data-l="Gap">9h13m</td>
+</tr><tr class="" data-fits="0" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 00:26</b></td>
+<td data-l="Train" class="train"><span class="no">12156</span> Bhopal Express</td>
+<td data-l="Arrives">Sun 05:40</td>
+<td data-l="Travel"><span class="tt ">5h14m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">14:26</td>
+<td data-l="1st chart">14:53</td>
+<td data-l="Gap">9h33m</td>
+</tr><tr class="" data-fits="0" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 00:48</b></td>
+<td data-l="Train" class="train"><span class="no">12628</span> Karnataka Exp</td>
+<td data-l="Arrives">Sun 06:25</td>
+<td data-l="Travel"><span class="tt ">5h37m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+<td data-l="Stn time −10h">12:48</td>
+<td data-l="1st chart">13:00</td>
+<td data-l="Gap">9h48m</td>
+</tr><tr class="" data-fits="0" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 01:15</b></td>
+<td data-l="Train" class="train"><span class="no">12622</span> Tamilnadu SF Exp</td>
+<td data-l="Arrives">Sun 06:45</td>
+<td data-l="Travel"><span class="tt ">5h30m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+<td data-l="Stn time −10h">13:25</td>
+<td data-l="1st chart">13:27</td>
+<td data-l="Gap">9h58m</td>
+</tr><tr class="" data-fits="0" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 01:22</b></td>
+<td data-l="Train" class="train"><span class="no">12920</span> Malwa Express</td>
+<td data-l="Arrives">Sun 08:26 <span class="stn">SHRN</span></td>
+<td data-l="Travel"><span class="tt ">7h04m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+<td data-l="Stn time −10h">13:15</td>
+<td data-l="1st chart">13:25</td>
+<td data-l="Gap">9h50m</td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 01:51</b></td>
+<td data-l="Train" class="train"><span class="no">11058</span> ASR CSMT Exp</td>
+<td data-l="Arrives">Sun 09:15</td>
+<td data-l="Travel"><span class="tt ">7h24m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 02:29</b></td>
+<td data-l="Train" class="train"><span class="no">15302</span> LKU SBC Express</td>
+<td data-l="Arrives">Sun 07:50 <span class="stn">RKMP</span></td>
+<td data-l="Travel"><span class="tt ">5h21m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 03:00</b></td>
+<td data-l="Train" class="train"><span class="no">12486</span> SGNR NED Exp</td>
+<td data-l="Arrives">Sun 08:25</td>
+<td data-l="Travel"><span class="tt ">5h25m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class="" data-fits="0" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 03:22</b></td>
+<td data-l="Train" class="train"><span class="no">12722</span> Dakshin Exp</td>
+<td data-l="Arrives">Sun 09:35</td>
+<td data-l="Travel"><span class="tt ">6h13m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+<td data-l="Stn time −10h">15:10</td>
+<td data-l="1st chart">15:26</td>
+<td data-l="Gap">9h44m</td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 04:30</b></td>
+<td data-l="Train" class="train"><span class="no">06598</span> YNRK-YPR Exp SPL</td>
+<td data-l="Arrives">Sun 10:30</td>
+<td data-l="Travel"><span class="tt ">6h00m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 06:20</b></td>
+<td data-l="Train" class="train"><span class="no">12198</span> BPL Intercity</td>
+<td data-l="Arrives">Sun 14:35</td>
+<td data-l="Travel"><span class="tt ">8h15m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="1">
+<td data-l="Leaves GWL"><b>Sun 09:28</b></td>
+<td data-l="Train" class="train"><span class="no">12002</span> Bhopal Shatabdi</td>
+<td data-l="Arrives">Sun 14:12</td>
+<td data-l="Travel"><span class="tt fast">4h44m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 09:43</b></td>
+<td data-l="Train" class="train"><span class="no">12804</span> VSKP Swarna Jayanti</td>
+<td data-l="Arrives">Sun 15:15</td>
+<td data-l="Travel"><span class="tt ">5h32m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 09:58</b></td>
+<td data-l="Train" class="train"><span class="no">12708</span> NZM TPTY SF Exp (AP Sampark Kranti)</td>
+<td data-l="Arrives">Sun 15:30</td>
+<td data-l="Travel"><span class="tt ">5h32m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 10:21</b></td>
+<td data-l="Train" class="train"><span class="no">12138</span> Punjab Mail</td>
+<td data-l="Arrives">Sun 16:35</td>
+<td data-l="Travel"><span class="tt ">6h14m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 10:33</b></td>
+<td data-l="Train" class="train"><span class="no">12618</span> Mangladweep Exp</td>
+<td data-l="Arrives">Sun 16:20</td>
+<td data-l="Travel"><span class="tt ">5h47m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 10:54</b></td>
+<td data-l="Train" class="train"><span class="no">18238</span> Chhattisgarh Exp</td>
+<td data-l="Arrives">Sun 17:55</td>
+<td data-l="Travel"><span class="tt ">7h01m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 11:45</b></td>
+<td data-l="Train" class="train"><span class="no">12650</span> YPR Sampark Kranti (Karnataka)</td>
+<td data-l="Arrives">Sun 16:55</td>
+<td data-l="Travel"><span class="tt ">5h10m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 16:07</b></td>
+<td data-l="Train" class="train"><span class="no">20424</span> Patalkot Exp</td>
+<td data-l="Arrives">Sun 21:50</td>
+<td data-l="Travel"><span class="tt ">5h43m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 16:24</b></td>
+<td data-l="Train" class="train"><span class="no">11078</span> Jhelum Express</td>
+<td data-l="Arrives">Mon 00:00</td>
+<td data-l="Travel"><span class="tt ">7h36m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Sun" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 17:08</b></td>
+<td data-l="Train" class="train"><span class="no">12716</span> Sachkhand Exp</td>
+<td data-l="Arrives">Sun 22:35</td>
+<td data-l="Travel"><span class="tt ">5h27m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class="" data-fits="0" data-day="Sun" data-known="1" data-fast="1">
+<td data-l="Leaves GWL"><b>Sun 17:42</b></td>
+<td data-l="Train" class="train"><span class="no">20172</span> Vande Bharat Exp</td>
+<td data-l="Arrives">Sun 22:16 <span class="stn">RKMP</span></td>
+<td data-l="Travel"><span class="tt fast">4h34m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">07:42</td>
+<td data-l="1st chart">08:13</td>
+<td data-l="Gap">9h29m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 19:07</b></td>
+<td data-l="Train" class="train"><span class="no">12191</span> NZM JBP SF Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 01:55</td>
+<td data-l="Travel"><span class="tt ">6h48m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">09:07</td>
+<td data-l="1st chart">09:17</td>
+<td data-l="Gap">9h50m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="1">
+<td data-l="Leaves GWL"><b>Sun 19:20</b></td>
+<td data-l="Train" class="train"><span class="no">20658</span> NZM UBL SF Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 00:12 <span class="stn">RKMP</span></td>
+<td data-l="Travel"><span class="tt fast">4h52m</span></td>
+<td data-l="Charted at"><span class="cs">NZM</span></td>
+<td data-l="Stn time −10h">05:55</td>
+<td data-l="1st chart">05:55 <span class="est">est.</span></td>
+<td data-l="Gap">10h <span class="est">est.</span></td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 19:30</b></td>
+<td data-l="Train" class="train"><span class="no">12406</span> Gondwana Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 01:05</td>
+<td data-l="Travel"><span class="tt ">5h35m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">09:30</td>
+<td data-l="1st chart">09:46</td>
+<td data-l="Gap">9h44m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 19:42</b></td>
+<td data-l="Train" class="train"><span class="no">16032</span> Andaman Express <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 02:10</td>
+<td data-l="Travel"><span class="tt ">6h28m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">09:42</td>
+<td data-l="1st chart">09:54</td>
+<td data-l="Gap">9h48m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 20:00</b></td>
+<td data-l="Train" class="train"><span class="no">12724</span> Telangana Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 01:20</td>
+<td data-l="Travel"><span class="tt ">5h20m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">10:00</td>
+<td data-l="1st chart">10:36</td>
+<td data-l="Gap">9h24m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="1">
+<td data-l="Leaves GWL"><b>Sun 20:10</b></td>
+<td data-l="Train" class="train"><span class="no">22222</span> CSMT Rajdhani <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 00:35</td>
+<td data-l="Travel"><span class="tt fast">4h25m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">10:10</td>
+<td data-l="1st chart">10:18</td>
+<td data-l="Gap">9h52m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 20:26</b></td>
+<td data-l="Train" class="train"><span class="no">12780</span> Goa Express <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 02:35</td>
+<td data-l="Travel"><span class="tt ">6h09m</span></td>
+<td data-l="Charted at"><span class="cs">NZM</span></td>
+<td data-l="Stn time −10h">05:15</td>
+<td data-l="1st chart">07:16</td>
+<td data-l="Gap">7h59m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 20:55</b></td>
+<td data-l="Train" class="train"><span class="no">12616</span> Grand Trunk Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 03:15</td>
+<td data-l="Travel"><span class="tt ">6h20m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">10:55</td>
+<td data-l="1st chart">11:40</td>
+<td data-l="Gap">9h15m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Sun 21:20</b></td>
+<td data-l="Train" class="train"><span class="no">12752</span> JAT NED Humsafar <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 02:40 <span class="stn">RKMP</span></td>
+<td data-l="Travel"><span class="tt ">5h20m</span></td>
+<td data-l="Charted at"><span class="cs">NDLS</span></td>
+<td data-l="Stn time −10h">07:05</td>
+<td data-l="1st chart">07:05 <span class="est">est.</span></td>
+<td data-l="Gap">10h <span class="est">est.</span></td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="1">
+<td data-l="Leaves GWL"><b>Sun 23:10</b></td>
+<td data-l="Train" class="train"><span class="no">22692</span> SBC (Bangalore) Rajdhani <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 03:45</td>
+<td data-l="Travel"><span class="tt fast">4h35m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">13:10</td>
+<td data-l="1st chart">13:32</td>
+<td data-l="Gap">9h38m</td>
+</tr><tr class="fits" data-fits="1" data-day="Sun" data-known="1" data-fast="1">
+<td data-l="Leaves GWL"><b>Sun 23:45</b></td>
+<td data-l="Train" class="train"><span class="no">20806</span> AP Express <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 04:35</td>
+<td data-l="Travel"><span class="tt fast">4h50m</span></td>
+<td data-l="Charted at"><span class="cs">NDLS</span></td>
+<td data-l="Stn time −10h">10:00</td>
+<td data-l="1st chart">12:01</td>
+<td data-l="Gap">7h59m</td>
+</tr><tr class="fits" data-fits="1" data-day="Mon" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 00:05</b></td>
+<td data-l="Train" class="train"><span class="no">12626</span> Kerala SF Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 05:20</td>
+<td data-l="Travel"><span class="tt ">5h15m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">14:05</td>
+<td data-l="1st chart">14:52</td>
+<td data-l="Gap">9h13m</td>
+</tr><tr class="fits" data-fits="1" data-day="Mon" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 00:26</b></td>
+<td data-l="Train" class="train"><span class="no">12156</span> Bhopal Express <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 05:40</td>
+<td data-l="Travel"><span class="tt ">5h14m</span></td>
+<td data-l="Charted at"><span class="cs">GWL</span></td>
+<td data-l="Stn time −10h">14:26</td>
+<td data-l="1st chart">14:53</td>
+<td data-l="Gap">9h33m</td>
+</tr><tr class="fits" data-fits="1" data-day="Mon" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 00:48</b></td>
+<td data-l="Train" class="train"><span class="no">12628</span> Karnataka Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 06:25</td>
+<td data-l="Travel"><span class="tt ">5h37m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+<td data-l="Stn time −10h">12:48</td>
+<td data-l="1st chart">13:00</td>
+<td data-l="Gap">9h48m</td>
+</tr><tr class="fits" data-fits="1" data-day="Mon" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 01:15</b></td>
+<td data-l="Train" class="train"><span class="no">12622</span> Tamilnadu SF Exp <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 06:45</td>
+<td data-l="Travel"><span class="tt ">5h30m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+<td data-l="Stn time −10h">13:25</td>
+<td data-l="1st chart">13:27</td>
+<td data-l="Gap">9h58m</td>
+</tr><tr class="" data-fits="0" data-day="Mon" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 01:22</b></td>
+<td data-l="Train" class="train"><span class="no">12920</span> Malwa Express</td>
+<td data-l="Arrives">Mon 08:26 <span class="stn">SHRN</span></td>
+<td data-l="Travel"><span class="tt ">7h04m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+<td data-l="Stn time −10h">13:15</td>
+<td data-l="1st chart">13:25</td>
+<td data-l="Gap">9h50m</td>
+</tr><tr class="fits" data-fits="1" data-day="Mon" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 01:47</b></td>
+<td data-l="Train" class="train"><span class="no">07622</span> NZM NED Fest SPL <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 07:10</td>
+<td data-l="Travel"><span class="tt ">5h23m</span></td>
+<td data-l="Charted at"><span class="cs">NZM</span></td>
+<td data-l="Stn time −10h">11:40</td>
+<td data-l="1st chart">11:40 <span class="est">est.</span></td>
+<td data-l="Gap">10h <span class="est">est.</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 01:51</b></td>
+<td data-l="Train" class="train"><span class="no">11058</span> ASR CSMT Exp</td>
+<td data-l="Arrives">Mon 09:15</td>
+<td data-l="Travel"><span class="tt ">7h24m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class="fits" data-fits="1" data-day="Mon" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 02:29</b></td>
+<td data-l="Train" class="train"><span class="no">22456</span> KLK SNSI SF Exp (Sainagar Shirdi) <span class="star" title="Fits plan">★</span></td>
+<td data-l="Arrives">Mon 07:40</td>
+<td data-l="Travel"><span class="tt ">5h11m</span></td>
+<td data-l="Charted at"><span class="cs">NDLS</span></td>
+<td data-l="Stn time −10h">12:15</td>
+<td data-l="1st chart">12:15 <span class="est">est.</span></td>
+<td data-l="Gap">10h <span class="est">est.</span></td>
+</tr><tr class="" data-fits="0" data-day="Mon" data-known="1" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 03:22</b></td>
+<td data-l="Train" class="train"><span class="no">12722</span> Dakshin Exp</td>
+<td data-l="Arrives">Mon 09:35</td>
+<td data-l="Travel"><span class="tt ">6h13m</span></td>
+<td data-l="Charted at"><span class="cs">AGC</span></td>
+<td data-l="Stn time −10h">15:10</td>
+<td data-l="1st chart">15:26</td>
+<td data-l="Gap">9h44m</td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 06:20</b></td>
+<td data-l="Train" class="train"><span class="no">12198</span> BPL Intercity</td>
+<td data-l="Arrives">Mon 14:35</td>
+<td data-l="Travel"><span class="tt ">8h15m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="1">
+<td data-l="Leaves GWL"><b>Mon 09:28</b></td>
+<td data-l="Train" class="train"><span class="no">12002</span> Bhopal Shatabdi</td>
+<td data-l="Arrives">Mon 14:12</td>
+<td data-l="Travel"><span class="tt fast">4h44m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 09:43</b></td>
+<td data-l="Train" class="train"><span class="no">12782</span> NZM MYS SF Exp (Swarna Jayanti)</td>
+<td data-l="Arrives">Mon 15:15</td>
+<td data-l="Travel"><span class="tt ">5h32m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 10:21</b></td>
+<td data-l="Train" class="train"><span class="no">12138</span> Punjab Mail</td>
+<td data-l="Arrives">Mon 16:35</td>
+<td data-l="Travel"><span class="tt ">6h14m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 10:33</b></td>
+<td data-l="Train" class="train"><span class="no">12618</span> Mangladweep Exp</td>
+<td data-l="Arrives">Mon 16:20</td>
+<td data-l="Travel"><span class="tt ">5h47m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 10:54</b></td>
+<td data-l="Train" class="train"><span class="no">18238</span> Chhattisgarh Exp</td>
+<td data-l="Arrives">Mon 17:55</td>
+<td data-l="Travel"><span class="tt ">7h01m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 11:20</b></td>
+<td data-l="Train" class="train"><span class="no">12808</span> Samta Express</td>
+<td data-l="Arrives">Mon 17:35</td>
+<td data-l="Travel"><span class="tt ">6h15m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr><tr class=" unknown" data-fits="0" data-day="Mon" data-known="0" data-fast="0">
+<td data-l="Leaves GWL"><b>Mon 11:45</b></td>
+<td data-l="Train" class="train"><span class="no">12650</span> YPR Sampark Kranti (Karnataka)</td>
+<td data-l="Arrives">Mon 16:55</td>
+<td data-l="Travel"><span class="tt ">5h10m</span></td>
+<td data-l="Charted at"><span class="muted">—</span></td>
+<td data-l="Stn time −10h"><span class="muted">—</span></td>
+<td data-l="1st chart"><span class="muted">—</span></td>
+<td data-l="Gap"><span class="muted">—</span></td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="legend">
+    <span>Arrives at Bhopal Jn unless marked <span class="stn">RKMP</span> Rani Kamalapati or <span class="stn">SHRN</span> Sant Hirdaram Nagar</span>
+    <span><span class="tt fast">4h25m</span> under 5 hours</span>
+  </div>
+</section>
+
+<section>
+  <h2>Notes</h2>
+  <div class="card notes"><ul>
+    <li><b>Gap</b> is how long before the train reaches its charting station the 1st chart came out. For trains starting at the charting station (NZM, NDLS) the departure time is used.</li>
+    <li>Trains charted at their starting station (20806, 12780) got charts about <b>8 hours</b> before departure; trains charted mid-route got them about <b>9–10 hours</b> before reaching the charting station.</li>
+    <li>After charting, 12626, 12156, 12628 and 12622 don't sell GWL→BPL tickets online; only the TTE on board can. Check the "TTE can book till / Online booking" line on each chart.</li>
+    <li>AGC, NZM and NDLS timings come from public timetable sites. Confirm on NTES before relying on them.</li>
+  </ul></div>
+</section>
 </main>
+<script>
+(function () {
+  var chips = document.querySelectorAll('.chip');
+  var rows = document.querySelectorAll('#rows tr');
+  var count = document.getElementById('count');
+  function apply(f) {
+    var n = 0;
+    rows.forEach(function (r) {
+      var show = f === 'all' ||
+        (f === 'fits' && r.dataset.fits === '1') ||
+        (f === 'fast' && r.dataset.fast === '1') ||
+        (f === 'known' && r.dataset.known === '1') ||
+        (f === r.dataset.day);
+      r.hidden = !show; if (show) n++;
+    });
+    count.textContent = n + ' trains';
+  }
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      chips.forEach(function (x) { x.setAttribute('aria-pressed', x === c ? 'true' : 'false'); });
+      apply(c.dataset.f);
+    });
+  });
+  apply('all');
+})();
+</script>
 </body>
 </html>
